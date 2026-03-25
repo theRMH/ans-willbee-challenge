@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "developerrmh@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    function isValidAttempt(data) {
+      return data.studentName is string && data.studentName.size() > 0 && data.studentName.size() < 100 &&
+             data.totalScore is int && data.totalScore >= 0 && data.totalScore <= 30 &&
+             data.timestamp is int &&
+             data.zone is string &&
+             data.scores is map;
+    }
+
+    match /attempts/{attemptId} {
+      // Students can create attempts without being logged in
+      allow create: if isValidAttempt(request.resource.data);
+      
+      // ALLOW PUBLIC READ FOR TESTING (as requested for demo/testing purpose)
+      allow read, list: if true;
+      
+      // Only admin can update or delete
+      allow update, delete: if isAdmin();
+    }
+  }
+}

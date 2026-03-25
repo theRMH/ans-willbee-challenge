@@ -1,0 +1,34 @@
+{
+  "entities": {
+    "QuizAttempt": {
+      "title": "Quiz Attempt",
+      "description": "A student's attempt at the WillBee Challenge quiz.",
+      "type": "object",
+      "properties": {
+        "studentName": { "type": "string", "description": "Full name of the student" },
+        "scores": { 
+          "type": "object", 
+          "properties": {
+            "Commerce": { "type": "integer" },
+            "Economics": { "type": "integer" },
+            "English": { "type": "integer" },
+            "Maths": { "type": "integer" },
+            "Accountancy": { "type": "integer" },
+            "Costing": { "type": "integer" }
+          }
+        },
+        "totalScore": { "type": "integer" },
+        "timestamp": { "type": "integer", "format": "date-time" },
+        "zone": { "type": "string" },
+        "recommendation": { "type": "string" }
+      },
+      "required": ["studentName", "scores", "totalScore", "timestamp", "zone"]
+    }
+  },
+  "firestore": {
+    "/attempts/{attemptId}": {
+      "schema": "QuizAttempt",
+      "description": "Collection of all student quiz attempts."
+    }
+  }
+}
