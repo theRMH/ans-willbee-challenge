@@ -8,6 +8,7 @@ import {
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 
+const ADMIN_USERNAME = 'willbeeadmin';
 const ADMIN_PASSWORD = 'willbee@admin2026';
 const SESSION_KEY = 'willbee_admin_auth';
 
@@ -16,6 +17,7 @@ const COLORS = ['#1a6645', '#e8c84a', '#a07820', '#2563eb', '#94a3b8', '#ef4444'
 
 export const AdminRoute: React.FC = () => {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [attempts, setAttempts] = useState<QuizAttempt[]>([]);
@@ -30,10 +32,12 @@ export const AdminRoute: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       sessionStorage.setItem(SESSION_KEY, '1');
       setAuthed(true);
       toast.success('Welcome, Admin!');
+    } else if (username !== ADMIN_USERNAME) {
+      toast.error('Wrong username.');
     } else {
       toast.error('Wrong password.');
     }
@@ -42,6 +46,7 @@ export const AdminRoute: React.FC = () => {
   const handleLogout = () => {
     sessionStorage.removeItem(SESSION_KEY);
     setAuthed(false);
+    setUsername('');
     setPassword('');
   };
 
@@ -61,8 +66,17 @@ export const AdminRoute: React.FC = () => {
               </div>
             </div>
             <h1 className="text-2xl font-black text-[#1a6645]">Admin Panel</h1>
-            <p className="text-xs text-[#1a6645]/50 font-medium">Enter password to access dashboard</p>
+            <p className="text-xs text-[#1a6645]/50 font-medium">Enter credentials to access dashboard</p>
           </div>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            className="w-full px-4 py-3 border-2 border-[#1a6645]/10 rounded-2xl text-[#1a6645] font-bold focus:outline-none focus:border-[#1a6645] focus:ring-4 focus:ring-[#1a6645]/10 transition-all"
+            autoFocus
+            autoComplete="username"
+          />
           <div className="relative">
             <input
               type={showPw ? 'text' : 'password'}
@@ -70,7 +84,7 @@ export const AdminRoute: React.FC = () => {
               value={password}
               onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 pr-12 border-2 border-[#1a6645]/10 rounded-2xl text-[#1a6645] font-bold focus:outline-none focus:border-[#1a6645] focus:ring-4 focus:ring-[#1a6645]/10 transition-all"
-              autoFocus
+              autoComplete="current-password"
             />
             <button type="button" onClick={() => setShowPw(p => !p)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1a6645]/40 hover:text-[#1a6645]">
               {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
