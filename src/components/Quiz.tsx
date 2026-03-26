@@ -4,6 +4,7 @@ import { QuizAttempt, Subject } from '../types';
 import { calculateResult } from '../utils/quizLogic';
 import { motion, AnimatePresence } from 'motion/react';
 import { LayoutDashboard, CheckCircle2, ChevronRight, Timer, User, Trophy, Star, Target, Compass, Rocket } from 'lucide-react';
+import { logo01Src, braneryLogoSrc, finskillzLogoSrc } from '../logoData';
 
 const ZONE_DATA = [
   { name: 'Zone Platinum', subtitle: 'The Professional Legend', score: 'More than 75% in ALL 6 subjects', Icon: Trophy },
@@ -368,9 +369,9 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
 
             {/* Partner Logos */}
             <div className="flex justify-center items-center gap-4 pt-2">
-              <img src="/Logo-01.jpg.jpeg" alt="Logo" className="h-10 w-auto object-contain" />
-              <img src="/Branery%20Institute%20logo%20with%20ellipse1.png" alt="Branery Institute" className="h-10 w-auto object-contain" />
-              <img src="/FinSkillz%20logo%20with%20ellipse.png" alt="FinSkillz" className="h-10 w-auto object-contain" />
+              <img src={logo01Src} alt="Logo" className="h-10 w-auto object-contain" />
+              <img src={braneryLogoSrc} alt="Branery Institute" className="h-10 w-auto object-contain" />
+              <img src={finskillzLogoSrc} alt="FinSkillz" className="h-10 w-auto object-contain" />
             </div>
           </div>
         </div>
