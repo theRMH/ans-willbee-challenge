@@ -104,8 +104,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1a6645 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
 
             {/* Top Image Banner — capped at 37% of card height */}
-            <div className="w-full shrink-0" style={{ height: '37%' }}>
-              <img src="/cert-header.png" alt="Certificate Header" className="w-full h-full object-cover object-top" />
+            <div className="w-full shrink-0">
+              <img src="/cert-header.png" alt="Certificate Header" className="w-full h-auto" />
             </div>
 
             <div className="flex-grow px-2 py-1 sm:px-4 sm:py-1.5 flex flex-col justify-between min-h-0">
