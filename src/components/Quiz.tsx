@@ -200,33 +200,6 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
               <ChevronRight size={22} />
             </button>
 
-            {/* Demo Link for Testing */}
-            <div className="pt-4 text-center">
-              <button 
-                onClick={() => {
-                  const demoAttempt: QuizAttempt = {
-                    studentName: studentName || 'Demo Student',
-                    scores: {
-                      Commerce: 5,
-                      Economics: 4,
-                      English: 3,
-                      Maths: 2,
-                      Accountancy: 5,
-                      Costing: 4
-                    },
-                    totalScore: 23,
-                    timestamp: Date.now(),
-                    zone: 'Strategic Leader',
-                    recommendation: 'You have a strong foundation in strategic management and financial accounting.'
-                  };
-                  setFinalAttempt(demoAttempt);
-                  setStep('result');
-                }}
-                className="text-[10px] font-black text-[#1a6645]/40 uppercase tracking-widest hover:text-[#1a6645] transition-colors underline underline-offset-4"
-              >
-                Demo Final Result (Testing Only)
-              </button>
-            </div>
           </div>
         </div>
       </motion.div>
@@ -368,10 +341,12 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
             </div>
 
             {/* Partner Logos */}
-            <div className="flex justify-center items-center gap-4 pt-2">
-              <img src={logo01Src} alt="Logo" className="h-10 w-auto object-contain" />
-              <img src={braneryLogoSrc} alt="Branery Institute" className="h-10 w-auto object-contain" />
-              <img src={finskillzLogoSrc} alt="FinSkillz" className="h-10 w-auto object-contain" />
+            <div className="flex justify-center items-center gap-3 pt-2">
+              {[{src: logo01Src, alt: 'Startup Secretary'}, {src: braneryLogoSrc, alt: 'Branery'}, {src: finskillzLogoSrc, alt: 'FinSkillz'}].map((logo) => (
+                <div key={logo.alt} style={{background:'white', borderRadius:'14px', boxShadow:'0 2px 8px rgba(0,0,0,0.10)', width:'110px', height:'60px', display:'flex', alignItems:'center', justifyContent:'center', padding:'6px'}}>
+                  <img src={logo.src} alt={logo.alt} style={{width:'100%', height:'100%', objectFit:'contain'}} />
+                </div>
+              ))}
             </div>
           </div>
         </div>

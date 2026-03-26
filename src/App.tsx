@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Quiz } from './components/Quiz';
 import { AdminPanel } from './components/AdminPanel';
 import { QuizAttempt } from './types';
-import { saveQuizAttempt, subscribeToAttempts } from './services/localStorageService';
+import { saveQuizAttempt, subscribeToAttempts } from './services/apiService';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster, toast } from 'sonner';
 
