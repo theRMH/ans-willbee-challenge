@@ -132,6 +132,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
 
               {/* Main Content Area */}
               <div className="relative flex-grow flex flex-col justify-center my-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1a6645]/5 to-transparent rounded-[16px] -rotate-1" />
+
                 <div className="relative space-y-1.5 text-center">
                   <p className="text-[5px] sm:text-[7px] text-[#a07820] uppercase font-black tracking-[0.3em]">Career DNA Match</p>
 
@@ -145,12 +147,12 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                   </div>
 
                   {/* Recommendation */}
-                  <div className="bg-[#1a6645]/5 rounded-lg px-2 py-1 border border-[#1a6645]/10">
-                    <p className="text-[6px] sm:text-[9px] text-[#1a6645]/80 font-medium leading-snug">
-                      {result.recommendation}
+                  <div className="bg-white/60 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-[#1a6645]/10 mx-1 shadow-sm">
+                    <p className="text-[6px] sm:text-[9px] text-[#1a6645]/80 font-medium leading-snug italic">
+                      "{result.recommendation}
                       {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
-                        <span className="block font-black text-[#1a6645] mt-0.5">Course: {result.recommendedCourse}</span>
-                      )}
+                        <span className="block font-black text-[#1a6645] not-italic mt-0.5">Course: {result.recommendedCourse}</span>
+                      )}"
                     </p>
                   </div>
 
@@ -165,6 +167,13 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                         <span className="text-[4px] sm:text-[5px] text-[#1a6645]/40 font-black uppercase">{subject.slice(0, 3)}</span>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Partner Logos */}
+                  <div className="flex justify-center items-center gap-2 pt-0.5">
+                    <img src="/Logo-01.jpg.jpeg" alt="Logo" className="h-5 sm:h-6 w-auto object-contain" />
+                    <img src="/Branery Institute logo with ellipse1.png" alt="Branery Institute" className="h-5 sm:h-6 w-auto object-contain" />
+                    <img src="/FinSkillz logo with ellipse.png" alt="FinSkillz" className="h-5 sm:h-6 w-auto object-contain" />
                   </div>
                 </div>
               </div>
