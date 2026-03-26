@@ -153,6 +153,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                       />
                     ))}
                   </div>
+
+                  {/* Recommendation */}
+                  <p className="text-[7px] sm:text-[10px] text-[#1a6645]/80 font-medium leading-snug px-2 pt-0.5">
+                    {result.recommendation}
+                    {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
+                      <span className="block font-black mt-0.5">Course: {result.recommendedCourse}</span>
+                    )}
+                  </p>
                 </div>
               </div>
 
@@ -173,25 +181,6 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
           </div>
         </motion.div>
       </div>
-
-      {/* Zone Name + Recommendation below card */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="w-full max-w-md px-4"
-      >
-        <h3 className="text-3xl sm:text-4xl font-black text-[#1a6645] leading-tight">{currentZoneName}</h3>
-        <p className="text-xl sm:text-2xl font-bold text-[#a07820] mt-1">{currentZoneSubtitle}</p>
-        <p className="text-base sm:text-lg text-slate-700 font-medium mt-3 leading-relaxed">
-          {result.recommendation}
-        </p>
-        {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
-          <p className="text-base sm:text-lg font-black text-[#1a6645] mt-2">
-            Recommended Course: {result.recommendedCourse}
-          </p>
-        )}
-      </motion.div>
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-4 w-full max-w-md px-4">
