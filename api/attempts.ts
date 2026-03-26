@@ -1,56 +1,43 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import mysql from "mysql2/promise";
+import dns from "dns";
 
-let pool: mysql.Pool | null = null;
+dns.setDefaultResultOrder("ipv4first");
 
-function getPool() {
-  if (!pool) {
-    pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 3,
-      connectTimeout: 10000,
-    });
-  }
-  return pool;
-}
-
-async function ensureTable() {
-  await getPool().execute(`
-    CREATE TABLE IF NOT EXISTS quiz_attempts (
-      id VARCHAR(60) PRIMARY KEY,
-      studentName VARCHAR(255) NOT NULL,
-      totalScore INT NOT NULL,
-      zone VARCHAR(255) NOT NULL,
-      recommendation TEXT,
-      timestamp BIGINT NOT NULL,
-      score_Commerce INT DEFAULT 0,
-      score_Economics INT DEFAULT 0,
-      score_English INT DEFAULT 0,
-      score_Maths INT DEFAULT 0,
-      score_Accountancy INT DEFAULT 0,
-      score_Costing INT DEFAULT 0
-    )
-  `);
+async function getConnection() {
+  return mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    connectTimeout: 10000,
+  });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Log env values for diagnosis
-  console.log("DB_HOST value:", process.env.DB_HOST);
-  console.log("DB_USER value:", process.env.DB_USER);
-  console.log("DB_NAME value:", process.env.DB_NAME);
-  console.log("DB_PASS:", process.env.DB_PASS ? "set" : "MISSING");
-
+  const conn = await getConnection();
   try {
-    await ensureTable();
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS quiz_attempts (
+        id VARCHAR(60) PRIMARY KEY,
+        studentName VARCHAR(255) NOT NULL,
+        totalScore INT NOT NULL,
+        zone VARCHAR(255) NOT NULL,
+        recommendation TEXT,
+        timestamp BIGINT NOT NULL,
+        score_Commerce INT DEFAULT 0,
+        score_Economics INT DEFAULT 0,
+        score_English INT DEFAULT 0,
+        score_Maths INT DEFAULT 0,
+        score_Accountancy INT DEFAULT 0,
+        score_Costing INT DEFAULT 0
+      )
+    `);
 
     if (req.method === "POST") {
       const a = req.body;
       const id = `db_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-      await getPool().execute(
+      await conn.execute(
         `INSERT INTO quiz_attempts (id, studentName, totalScore, zone, recommendation, timestamp,
           score_Commerce, score_Economics, score_English, score_Maths, score_Accountancy, score_Costing)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -65,10 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (req.method === "GET") {
-      const [rows] = await getPool().execute(
+      const [rows] = await conn.execute(
         "SELECT * FROM quiz_attempts ORDER BY timestamp DESC"
       );
-      const attempts = (rows as any[]).map((r) => ({
+      const attempts = (rows as any[]).map((r: any) => ({
         id: r.id,
         studentName: r.studentName,
         totalScore: r.totalScore,
@@ -89,7 +76,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     res.status(405).json({ error: "Method not allowed" });
   } catch (err: any) {
-    console.error("DB error:", err?.message || err);
+    console.error("DB error:", err?.message);
     res.status(500).json({ error: "DB error", detail: err?.message });
+  } finally {
+    await conn.end();
   }
 }
