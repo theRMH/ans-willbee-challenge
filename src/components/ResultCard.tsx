@@ -103,25 +103,27 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
           <div className="bg-white h-full rounded-[26px] sm:rounded-[34px] overflow-hidden flex flex-col relative z-10 border-b-[10px] sm:border-b-[12px] border-[#e8c84a] shadow-inner">
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1a6645 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
 
-            {/* Top Image Banner */}
-            <img src="/cert-header.png" alt="Certificate Header" className="w-full h-auto object-cover" />
+            {/* Top Image Banner — capped at 37% of card height */}
+            <div className="w-full shrink-0" style={{ height: '37%' }}>
+              <img src="/cert-header.png" alt="Certificate Header" className="w-full h-full object-cover object-top" />
+            </div>
 
-            <div className="flex-grow p-2.5 sm:p-5 flex flex-col justify-between">
+            <div className="flex-grow p-2 sm:p-4 flex flex-col justify-between min-h-0">
               {/* Header Section */}
-              <div className="space-y-1 sm:space-y-1.5 relative">
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1a6645] text-white rounded-full text-[7px] font-black uppercase tracking-wider shadow-sm">
-                  <Trophy size={7} className="text-[#e8c84a]" />
+              <div className="space-y-0.5 relative">
+                <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#1a6645] text-white rounded-full text-[6px] font-black uppercase tracking-wider shadow-sm">
+                  <Trophy size={6} className="text-[#e8c84a]" />
                   Official Result
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <h1 className="text-lg sm:text-2xl font-black text-[#1a6645] leading-none tracking-tighter truncate min-w-0">
+                  <h1 className="text-sm sm:text-xl font-black text-[#1a6645] leading-none tracking-tighter truncate min-w-0">
                     {attempt.studentName}
                   </h1>
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: 'spring' }}
-                    className="bg-[#e8c84a] text-[#1a6645] text-[6px] sm:text-[8px] font-black px-1.5 py-0.5 rounded-md shadow-sm border border-white uppercase tracking-tighter whitespace-nowrap shrink-0"
+                    className="bg-[#e8c84a] text-[#1a6645] text-[5px] sm:text-[7px] font-black px-1 py-0.5 rounded shadow-sm border border-white uppercase tracking-tighter whitespace-nowrap shrink-0"
                   >
                     Discovered commerce
                   </motion.div>
@@ -129,24 +131,22 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
               </div>
 
               {/* Main Content Area */}
-              <div className="relative flex-grow flex flex-col justify-center mt-2 sm:mt-3 mb-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a6645]/5 to-transparent rounded-[20px] sm:rounded-[28px] -rotate-1" />
-
-                <div className="relative space-y-2 sm:space-y-3 text-center">
-                  <p className="text-[6px] sm:text-[8px] text-[#a07820] uppercase font-black tracking-[0.4em]">Career DNA Match</p>
+              <div className="relative flex-grow flex flex-col justify-center my-1">
+                <div className="relative space-y-1.5 text-center">
+                  <p className="text-[5px] sm:text-[7px] text-[#a07820] uppercase font-black tracking-[0.3em]">Career DNA Match</p>
 
                   <div className="space-y-0.5">
-                    <h2 className="text-base sm:text-2xl font-black text-[#1a6645] leading-tight">
+                    <h2 className="text-sm sm:text-xl font-black text-[#1a6645] leading-tight">
                       {currentZoneName}
                     </h2>
-                    <p className="text-[10px] sm:text-sm font-bold text-[#a07820] leading-tight">
+                    <p className="text-[9px] sm:text-xs font-bold text-[#a07820] leading-tight">
                       {currentZoneSubtitle}
                     </p>
                   </div>
 
                   {/* Recommendation */}
-                  <div className="bg-[#1a6645]/5 rounded-lg sm:rounded-xl px-2 py-1.5 sm:py-2 border border-[#1a6645]/10 mx-1">
-                    <p className="text-[7px] sm:text-[10px] text-[#1a6645]/80 font-medium leading-snug">
+                  <div className="bg-[#1a6645]/5 rounded-lg px-2 py-1 border border-[#1a6645]/10">
+                    <p className="text-[6px] sm:text-[9px] text-[#1a6645]/80 font-medium leading-snug">
                       {result.recommendation}
                       {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
                         <span className="block font-black text-[#1a6645] mt-0.5">Course: {result.recommendedCourse}</span>
@@ -155,11 +155,11 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                   </div>
 
                   {/* Subject Highlights */}
-                  <div className="flex justify-center items-end gap-1 pt-0.5">
+                  <div className="flex justify-center items-end gap-1">
                     {(Object.entries(attempt.scores) as [Subject, number][]).map(([subject, score]) => (
                       <div key={subject} className="flex flex-col items-center gap-0.5">
                         <div
-                          className={`rounded-full transition-all duration-500 ${score > 3 ? 'w-5 sm:w-6 h-2 bg-[#1a6645]' : 'w-2 h-2 bg-[#1a6645]/15'}`}
+                          className={`rounded-full transition-all duration-500 ${score > 3 ? 'w-4 sm:w-5 h-1.5 bg-[#1a6645]' : 'w-1.5 h-1.5 bg-[#1a6645]/15'}`}
                           title={subject}
                         />
                         <span className="text-[4px] sm:text-[5px] text-[#1a6645]/40 font-black uppercase">{subject.slice(0, 3)}</span>
@@ -170,17 +170,15 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
               </div>
 
               {/* Footer Branding */}
-              <div className="pt-1.5 flex justify-between items-end border-t border-[#1a6645]/5">
+              <div className="pt-1 flex justify-between items-center border-t border-[#1a6645]/10 shrink-0">
                 <div className="flex items-center gap-1">
-                  <img src="/logo.png" alt="Logo" className="h-5 w-auto object-contain" />
+                  <img src="/logo.png" alt="Logo" className="h-4 sm:h-5 w-auto object-contain" />
                   <div className="flex flex-col leading-none">
-                    <span className="text-[7px] font-black text-[#1a6645] uppercase tracking-tighter">WillBee Quiz</span>
-                    <span className="text-[5px] font-bold text-[#a07820] uppercase tracking-[0.2em] pt-0.5 inline-block">By ESG CS Foundation</span>
+                    <span className="text-[6px] sm:text-[7px] font-black text-[#1a6645] uppercase tracking-tighter">WillBee Quiz</span>
+                    <span className="text-[4px] sm:text-[5px] font-bold text-[#a07820] uppercase tracking-[0.2em] pt-0.5 inline-block">By ESG CS Foundation</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[5px] font-black text-[#1a6645]/30 uppercase tracking-widest">willbee.career</p>
-                </div>
+                <p className="text-[4px] sm:text-[5px] font-black text-[#1a6645]/30 uppercase tracking-widest">willbee.career</p>
               </div>
             </div>
           </div>
