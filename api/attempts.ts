@@ -38,11 +38,11 @@ async function ensureTable() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Log env check (no secrets)
-  console.log("DB_HOST:", process.env.DB_HOST ? "set" : "MISSING");
-  console.log("DB_USER:", process.env.DB_USER ? "set" : "MISSING");
+  // Log env values for diagnosis
+  console.log("DB_HOST value:", process.env.DB_HOST);
+  console.log("DB_USER value:", process.env.DB_USER);
+  console.log("DB_NAME value:", process.env.DB_NAME);
   console.log("DB_PASS:", process.env.DB_PASS ? "set" : "MISSING");
-  console.log("DB_NAME:", process.env.DB_NAME ? "set" : "MISSING");
 
   try {
     await ensureTable();
