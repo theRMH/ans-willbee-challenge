@@ -15,6 +15,16 @@ async function getConnection() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Temporary debug - remove after fix
+  if (req.query.debug === "1") {
+    return res.json({
+      DB_HOST: process.env.DB_HOST || "MISSING",
+      DB_USER: process.env.DB_USER || "MISSING",
+      DB_NAME: process.env.DB_NAME || "MISSING",
+      DB_PASS: process.env.DB_PASS ? "set" : "MISSING",
+    });
+  }
+
   const conn = await getConnection();
   try {
     await conn.execute(`
