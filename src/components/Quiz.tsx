@@ -164,7 +164,7 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
           </div>
 
           <div className="space-y-1 sm:space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-black text-[#1a6645] tracking-tight leading-tight">WillBee Quiz</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1a6645] tracking-tight leading-tight text-center">WILLBEE</h1>
             <p className="text-sm sm:text-base text-[#1a6645]/70 font-medium leading-relaxed max-w-md mx-auto">
               Identify your <span className="text-[#1a6645] font-black">professional path</span> in Commerce.
             </p>
