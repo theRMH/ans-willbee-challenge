@@ -2,48 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import { domToPng } from 'modern-screenshot';
 import { QuizAttempt, Subject } from '../types';
 import { calculateResult } from '../utils/quizLogic';
-import { Download, Trophy, Star, Target, Compass, Rocket, Instagram } from 'lucide-react';
+import { Download, Trophy, Instagram } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
-
-const ZONE_DATA = [
-  {
-    name: 'Zone Platinum',
-    subtitle: 'The Professional Legend',
-    score: 'More than 75% in ALL 6 subjects',
-    recommendation: 'You can choose any career you like! You have the stamina to master multiple complex fields at once. Enroll in a Professional course (CA/CS/CMA) along with a Regular UG degree.',
-    Icon: Trophy,
-  },
-  {
-    name: 'Zone Gold',
-    subtitle: 'The Specialist Powerhouse',
-    score: 'More than 75% in Top 3 subjects and more than 50% in the remaining 3',
-    recommendation: 'Aim for direct professional training in your specific line (CA/CMA/CS).',
-    Icon: Star,
-  },
-  {
-    name: 'Zone Silver',
-    subtitle: 'The Practical Builder',
-    score: 'More than 50% in ALL 6 subjects',
-    recommendation: 'You have a solid foundation. Pursue a Regular UG degree and use Finskillz and Startup Secretary as "Bridge Courses" to certify your practical skills.',
-    Icon: Target,
-  },
-  {
-    name: 'Zone Bronze',
-    subtitle: 'The Niche Explorer',
-    score: 'More than 50% in Top 3 subjects and less than 50% in the remaining 3',
-    recommendation: 'Focus on your specialized Regular UG degree (B.Com, BBA, B.L) and use Skill Courses to decide your career along with employment.',
-    Icon: Compass,
-  },
-  {
-    name: 'Zone Analysis',
-    subtitle: 'The Career Voyager',
-    score: 'Not even 3 subjects have 50% or more',
-    recommendation: 'Analyze whether you really have an interest in commerce related courses. You can consider skill-based jobs while studying.',
-    Icon: Rocket,
-  },
-];
 
 interface ResultCardProps {
   attempt: QuizAttempt;
@@ -56,7 +18,6 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
 
   const currentZoneName = result.name.split(':')[0].trim();
   const currentZoneSubtitle = result.name.split(':')[1]?.trim();
-  const currentZoneData = ZONE_DATA.find(z => z.name === currentZoneName);
 
   useEffect(() => {
     const duration = 3 * 1000;
@@ -213,66 +174,23 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
         </motion.div>
       </div>
 
-      {/* Zone Explanation */}
-      {currentZoneData && (
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="w-full max-w-md px-4"
-        >
-          <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-md border-2 border-[#1a6645]/20">
-            <h3 className="text-3xl sm:text-4xl font-black text-[#1a6645] leading-tight">{currentZoneName}</h3>
-            <p className="text-xl sm:text-2xl font-bold text-[#a07820] mt-1">{currentZoneSubtitle}</p>
-            <div className="mt-4 space-y-3">
-              <div>
-                <p className="text-sm font-black text-slate-500 uppercase tracking-wider">Score</p>
-                <p className="text-base font-semibold text-slate-700 mt-1">{currentZoneData.score}</p>
-              </div>
-              <div>
-                <p className="text-sm font-black text-slate-500 uppercase tracking-wider">Recommendation</p>
-                <p className="text-base text-slate-700 mt-1">{currentZoneData.recommendation}</p>
-                {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
-                  <p className="text-base font-black text-[#1a6645] mt-2">
-                    Recommended Course: {result.recommendedCourse}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* All Zones */}
+      {/* Zone Name + Recommendation below card */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.3 }}
         className="w-full max-w-md px-4"
       >
-        <p className="text-xs font-black text-[#1a6645] uppercase tracking-[0.2em] text-center mb-3">All Zones</p>
-        <div className="space-y-2">
-          {ZONE_DATA.map(zone => {
-            const isActive = zone.name === currentZoneName;
-            return (
-              <div
-                key={zone.name}
-                className={`p-3 rounded-xl border-2 transition-all ${isActive ? 'border-[#1a6645] bg-[#1a6645]/5' : 'border-slate-100 bg-white'}`}
-              >
-                <div className="flex items-start gap-2.5">
-                  <zone.Icon size={16} className={`mt-0.5 shrink-0 ${isActive ? 'text-[#1a6645]' : 'text-slate-400'}`} />
-                  <div>
-                    <div className="flex flex-wrap items-baseline gap-x-1.5">
-                      <span className={`font-black text-sm ${isActive ? 'text-[#1a6645]' : 'text-slate-700'}`}>{zone.name}</span>
-                      <span className={`text-sm font-bold ${isActive ? 'text-[#a07820]' : 'text-slate-500'}`}>{zone.subtitle}</span>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-0.5">{zone.score}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <h3 className="text-3xl sm:text-4xl font-black text-[#1a6645] leading-tight">{currentZoneName}</h3>
+        <p className="text-xl sm:text-2xl font-bold text-[#a07820] mt-1">{currentZoneSubtitle}</p>
+        <p className="text-base sm:text-lg text-slate-700 font-medium mt-3 leading-relaxed">
+          {result.recommendation}
+        </p>
+        {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
+          <p className="text-base sm:text-lg font-black text-[#1a6645] mt-2">
+            Recommended Course: {result.recommendedCourse}
+          </p>
+        )}
       </motion.div>
 
       {/* Action Buttons */}

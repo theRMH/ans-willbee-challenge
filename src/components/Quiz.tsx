@@ -3,7 +3,15 @@ import { QUESTIONS, SUBJECTS, SCORE_SUBJECTS } from '../constants';
 import { QuizAttempt, Subject } from '../types';
 import { calculateResult } from '../utils/quizLogic';
 import { motion, AnimatePresence } from 'motion/react';
-import { LayoutDashboard, CheckCircle2, ChevronRight, Timer, User, Trophy } from 'lucide-react';
+import { LayoutDashboard, CheckCircle2, ChevronRight, Timer, User, Trophy, Star, Target, Compass, Rocket } from 'lucide-react';
+
+const ZONE_DATA = [
+  { name: 'Zone Platinum', subtitle: 'The Professional Legend', score: 'More than 75% in ALL 6 subjects', Icon: Trophy },
+  { name: 'Zone Gold', subtitle: 'The Specialist Powerhouse', score: 'More than 75% in Top 3 subjects and more than 50% in the remaining 3', Icon: Star },
+  { name: 'Zone Silver', subtitle: 'The Practical Builder', score: 'More than 50% in ALL 6 subjects', Icon: Target },
+  { name: 'Zone Bronze', subtitle: 'The Niche Explorer', score: 'More than 50% in Top 3 subjects and less than 50% in the remaining 3', Icon: Compass },
+  { name: 'Zone Analysis', subtitle: 'The Career Voyager', score: 'Not even 3 subjects have 50% or more', Icon: Rocket },
+];
 import { ResultCard } from './ResultCard';
 import { domToPng } from 'modern-screenshot';
 import { toast } from 'sonner';
@@ -333,19 +341,29 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
               <span className="text-xl sm:text-3xl font-black text-[#1a6645] tracking-tighter">{finalAttempt.totalScore} <span className="text-sm sm:text-lg text-[#1a6645]/40">/ 30</span></span>
             </div>
 
-            <div className="space-y-4">
-              <div className="p-4 sm:p-6 bg-[#1a6645]/5 rounded-[22px] border border-[#1a6645]/10 space-y-2">
-                <h4 className="text-[10px] sm:text-xs font-black text-[#a07820] uppercase tracking-[0.2em]">Recommendation</h4>
-                <p className="text-sm sm:text-base text-[#1a6645] font-bold leading-relaxed">
-                  {finalAttempt.recommendation}
-                </p>
-              </div>
-              <div className="p-4 sm:p-6 bg-[#e8c84a]/10 rounded-[22px] border border-[#e8c84a]/20 space-y-2">
-                <h4 className="text-[10px] sm:text-xs font-black text-[#a07820] uppercase tracking-[0.2em]">Career Path</h4>
-                <p className="text-sm sm:text-base text-[#1a6645] font-bold leading-relaxed">
-                  {calculateResult(finalAttempt.scores).path}
-                </p>
-              </div>
+            <div className="space-y-2">
+              <p className="text-[10px] sm:text-xs font-black text-[#a07820] uppercase tracking-[0.2em] px-1">All Zones</p>
+              {ZONE_DATA.map(zone => {
+                const currentZoneName = calculateResult(finalAttempt.scores).name.split(':')[0].trim();
+                const isActive = zone.name === currentZoneName;
+                return (
+                  <div
+                    key={zone.name}
+                    className={`p-3 sm:p-4 rounded-[16px] border-2 transition-all ${isActive ? 'border-[#1a6645] bg-[#1a6645]/5' : 'border-slate-100 bg-white/60'}`}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <zone.Icon size={15} className={`mt-0.5 shrink-0 ${isActive ? 'text-[#1a6645]' : 'text-slate-400'}`} />
+                      <div>
+                        <div className="flex flex-wrap items-baseline gap-x-1.5">
+                          <span className={`font-black text-sm ${isActive ? 'text-[#1a6645]' : 'text-slate-700'}`}>{zone.name}</span>
+                          <span className={`text-sm font-bold ${isActive ? 'text-[#a07820]' : 'text-slate-500'}`}>{zone.subtitle}</span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5">{zone.score}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
