@@ -129,38 +129,43 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
               </div>
 
               {/* Main Content Area */}
-              <div className="relative flex-grow flex flex-col justify-center mt-2 sm:mt-3 mb-0.5">
+              <div className="relative flex-grow flex flex-col justify-center mt-2 sm:mt-3 mb-1">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#1a6645]/5 to-transparent rounded-[20px] sm:rounded-[28px] -rotate-1" />
 
-                <div className="relative space-y-1.5 sm:space-y-2 text-center">
-                  <p className="text-[6px] sm:text-[8px] text-[#a07820] uppercase font-black tracking-[0.4em] pt-[2px]">Career DNA Match</p>
+                <div className="relative space-y-2 sm:space-y-3 text-center">
+                  <p className="text-[6px] sm:text-[8px] text-[#a07820] uppercase font-black tracking-[0.4em]">Career DNA Match</p>
+
                   <div className="space-y-0.5">
-                    <h2 className="text-sm sm:text-xl font-black text-[#1a6645] leading-tight">
+                    <h2 className="text-base sm:text-2xl font-black text-[#1a6645] leading-tight">
                       {currentZoneName}
                     </h2>
-                    <p className="text-[9px] sm:text-sm font-bold text-[#a07820] leading-tight">
+                    <p className="text-[10px] sm:text-sm font-bold text-[#a07820] leading-tight">
                       {currentZoneSubtitle}
                     </p>
                   </div>
 
-                  {/* Subject Highlights */}
-                  <div className="flex justify-center gap-1 pt-1">
-                    {(Object.entries(attempt.scores) as [Subject, number][]).map(([subject, score]) => (
-                      <div
-                        key={subject}
-                        className={`h-1.5 rounded-full transition-all duration-500 ${score > 3 ? 'w-6 bg-[#1a6645]' : 'w-2 bg-[#1a6645]/10'}`}
-                        title={subject}
-                      />
-                    ))}
+                  {/* Recommendation */}
+                  <div className="bg-[#1a6645]/5 rounded-lg sm:rounded-xl px-2 py-1.5 sm:py-2 border border-[#1a6645]/10 mx-1">
+                    <p className="text-[7px] sm:text-[10px] text-[#1a6645]/80 font-medium leading-snug">
+                      {result.recommendation}
+                      {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
+                        <span className="block font-black text-[#1a6645] mt-0.5">Course: {result.recommendedCourse}</span>
+                      )}
+                    </p>
                   </div>
 
-                  {/* Recommendation */}
-                  <p className="text-[7px] sm:text-[10px] text-[#1a6645]/80 font-medium leading-snug px-2 pt-0.5">
-                    {result.recommendation}
-                    {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
-                      <span className="block font-black mt-0.5">Course: {result.recommendedCourse}</span>
-                    )}
-                  </p>
+                  {/* Subject Highlights */}
+                  <div className="flex justify-center items-end gap-1 pt-0.5">
+                    {(Object.entries(attempt.scores) as [Subject, number][]).map(([subject, score]) => (
+                      <div key={subject} className="flex flex-col items-center gap-0.5">
+                        <div
+                          className={`rounded-full transition-all duration-500 ${score > 3 ? 'w-5 sm:w-6 h-2 bg-[#1a6645]' : 'w-2 h-2 bg-[#1a6645]/15'}`}
+                          title={subject}
+                        />
+                        <span className="text-[4px] sm:text-[5px] text-[#1a6645]/40 font-black uppercase">{subject.slice(0, 3)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
