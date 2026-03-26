@@ -157,23 +157,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                   </div>
 
                   {/* Subject Highlights */}
-                  <div className="flex justify-center items-end gap-1">
+                  <div className="flex justify-center items-center gap-1">
                     {(Object.entries(attempt.scores) as [Subject, number][]).map(([subject, score]) => (
-                      <div key={subject} className="flex flex-col items-center gap-0.5">
-                        <div
-                          className={`rounded-full transition-all duration-500 ${score > 3 ? 'w-4 sm:w-5 h-1.5 bg-[#1a6645]' : 'w-1.5 h-1.5 bg-[#1a6645]/15'}`}
-                          title={subject}
-                        />
-                        <span className="text-[4px] sm:text-[5px] text-[#1a6645]/40 font-black uppercase">{subject.slice(0, 3)}</span>
-                      </div>
+                      <div
+                        key={subject}
+                        className={`rounded-full transition-all duration-500 ${score > 3 ? 'w-4 sm:w-5 h-1.5 bg-[#1a6645]' : 'w-1.5 h-1.5 bg-[#1a6645]/15'}`}
+                        title={subject}
+                      />
                     ))}
-                  </div>
-
-                  {/* Partner Logos */}
-                  <div className="flex justify-center items-center gap-2 pt-0.5">
-                    <img src="/Logo-01.jpg.jpeg" alt="Logo" className="h-5 sm:h-6 w-auto object-contain" />
-                    <img src="/Branery Institute logo with ellipse1.png" alt="Branery Institute" className="h-5 sm:h-6 w-auto object-contain" />
-                    <img src="/FinSkillz logo with ellipse.png" alt="FinSkillz" className="h-5 sm:h-6 w-auto object-contain" />
                   </div>
                 </div>
               </div>
