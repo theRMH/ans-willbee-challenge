@@ -135,20 +135,20 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                 <div className="absolute inset-0 bg-gradient-to-br from-[#1a6645]/5 to-transparent rounded-[16px] -rotate-1" />
 
                 <div className="relative space-y-1.5 text-center">
-                  <p className="text-[5px] sm:text-[7px] text-[#a07820] uppercase font-black tracking-[0.3em]">Career DNA Match</p>
+                  <p className="text-[9px] text-[#a07820] uppercase font-black tracking-[0.3em]">Career DNA Match</p>
 
                   <div className="space-y-0.5">
-                    <h2 className="text-sm sm:text-xl font-black text-[#1a6645] leading-tight">
+                    <h2 className="text-[8px] font-black text-[#1a6645] leading-tight">
                       {currentZoneName}
                     </h2>
-                    <p className="text-[9px] sm:text-xs font-bold text-[#a07820] leading-tight">
+                    <p className="text-[6px] font-bold text-[#a07820] leading-tight">
                       {currentZoneSubtitle}
                     </p>
                   </div>
 
                   {/* Recommendation */}
                   <div className="bg-white/60 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-[#1a6645]/10 mx-1 shadow-sm">
-                    <p className="text-[8px] sm:text-[11px] text-[#1a6645]/80 font-medium leading-snug italic">
+                    <p className="text-[11px] text-[#1a6645]/80 font-medium leading-snug italic">
                       "{result.recommendation}
                       {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
                         <span className="block font-black text-[#1a6645] not-italic mt-0.5">Course: {result.recommendedCourse}</span>
