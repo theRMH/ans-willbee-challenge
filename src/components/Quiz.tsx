@@ -365,6 +365,13 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
                 );
               })}
             </div>
+
+            {/* Partner Logos */}
+            <div className="flex justify-center items-center gap-4 pt-2">
+              <img src="/Logo-01.jpg.jpeg" alt="Logo" className="h-10 w-auto object-contain" />
+              <img src="/Branery Institute logo with ellipse1.png" alt="Branery Institute" className="h-10 w-auto object-contain" />
+              <img src="/FinSkillz logo with ellipse.png" alt="FinSkillz" className="h-10 w-auto object-contain" />
+            </div>
           </div>
         </div>
       </div>
