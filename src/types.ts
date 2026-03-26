@@ -23,4 +23,5 @@ export interface ZoneResult {
   recommendation: string;
   path: string;
   badge?: string;
+  recommendedCourse?: string;
 }

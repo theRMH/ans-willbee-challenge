@@ -38,7 +38,8 @@ export const calculateResult = (scores: Record<Subject, number>): ZoneResult => 
     return {
       name: 'Zone Gold: The Specialist Powerhouse',
       recommendation: 'Aim for direct professional training in your specific line.',
-      path: `Pursue ${recommendedCourse} as your primary professional goal along with a Regular UG degree.`
+      path: `Pursue ${recommendedCourse} as your primary professional goal along with a Regular UG degree.`,
+      recommendedCourse,
     };
   }
 
