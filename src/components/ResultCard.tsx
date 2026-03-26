@@ -138,10 +138,10 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
                   <p className="text-[9px] text-[#a07820] uppercase font-black tracking-[0.3em]">Career DNA Match</p>
 
                   <div className="space-y-0.5">
-                    <h2 className="text-[8px] font-black text-[#1a6645] leading-tight">
+                    <h2 className="text-[12px] font-black text-[#1a6645] leading-tight">
                       {currentZoneName}
                     </h2>
-                    <p className="text-[6px] font-bold text-[#a07820] leading-tight">
+                    <p className="text-[10px] font-bold text-[#a07820] leading-tight">
                       {currentZoneSubtitle}
                     </p>
                   </div>
