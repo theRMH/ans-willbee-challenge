@@ -108,7 +108,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
               <img src="/cert-header.png" alt="Certificate Header" className="w-full h-full object-cover object-top" />
             </div>
 
-            <div className="flex-grow p-2 sm:p-4 flex flex-col justify-between min-h-0">
+            <div className="flex-grow px-2 py-1 sm:px-4 sm:py-1.5 flex flex-col justify-between min-h-0">
               {/* Header Section */}
               <div className="space-y-0.5 relative">
                 <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#1a6645] text-white rounded-full text-[6px] font-black uppercase tracking-wider shadow-sm">
@@ -148,7 +148,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ attempt, onDownloadBreak
 
                   {/* Recommendation */}
                   <div className="bg-white/60 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-[#1a6645]/10 mx-1 shadow-sm">
-                    <p className="text-[6px] sm:text-[9px] text-[#1a6645]/80 font-medium leading-snug italic">
+                    <p className="text-[8px] sm:text-[11px] text-[#1a6645]/80 font-medium leading-snug italic">
                       "{result.recommendation}
                       {result.recommendedCourse && currentZoneName === 'Zone Gold' && (
                         <span className="block font-black text-[#1a6645] not-italic mt-0.5">Course: {result.recommendedCourse}</span>
