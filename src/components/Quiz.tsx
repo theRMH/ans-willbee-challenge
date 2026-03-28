@@ -274,7 +274,7 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
               onClick={handleContinue}
               className="btn-primary w-full text-lg py-3"
             >
-              Continue to Language
+              Start Quiz
               <ChevronRight size={22} />
             </button>
 
