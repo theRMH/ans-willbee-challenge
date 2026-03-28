@@ -31,6 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       CREATE TABLE IF NOT EXISTS quiz_attempts (
         id VARCHAR(60) PRIMARY KEY,
         studentName VARCHAR(255) NOT NULL,
+        whatsappNumber VARCHAR(50) NOT NULL,
         totalScore INT NOT NULL,
         zone VARCHAR(255) NOT NULL,
         recommendation TEXT,
@@ -48,11 +49,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const a = req.body;
       const id = `db_${Date.now()}_${Math.random().toString(36).slice(2)}`;
       await conn.execute(
-        `INSERT INTO quiz_attempts (id, studentName, totalScore, zone, recommendation, timestamp,
+        `INSERT INTO quiz_attempts (id, studentName, whatsappNumber, totalScore, zone, recommendation, timestamp,
           score_Commerce, score_Economics, score_English, score_Maths, score_Accountancy, score_Costing)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          id, a.studentName, a.totalScore, a.zone, a.recommendation || "",
+          id, a.studentName, a.whatsappNumber || "", a.totalScore, a.zone, a.recommendation || "",
           a.timestamp,
           a.scores?.Commerce || 0, a.scores?.Economics || 0, a.scores?.English || 0,
           a.scores?.Maths || 0, a.scores?.Accountancy || 0, a.scores?.Costing || 0,
@@ -68,6 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const attempts = (rows as any[]).map((r: any) => ({
         id: r.id,
         studentName: r.studentName,
+        whatsappNumber: r.whatsappNumber || '',
         totalScore: r.totalScore,
         zone: r.zone,
         recommendation: r.recommendation,

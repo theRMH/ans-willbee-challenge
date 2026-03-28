@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { QUESTIONS, SUBJECTS, SCORE_SUBJECTS } from '../constants';
+import { QUESTIONS, QUESTION_TRANSLATIONS, SUBJECTS, SCORE_SUBJECTS } from '../constants';
 import { QuizAttempt, Subject } from '../types';
 import { calculateResult } from '../utils/quizLogic';
 import { motion, AnimatePresence } from 'motion/react';
@@ -25,8 +25,13 @@ interface QuizProps {
 }
 
 export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmin, onSwitchView }) => {
-  const [step, setStep] = useState<'welcome' | 'quiz' | 'result'>(initialName ? 'quiz' : 'welcome');
+  const [step, setStep] = useState<'welcome' | 'language' | 'quiz' | 'result'>(initialName ? 'quiz' : 'welcome');
   const [studentName, setStudentName] = useState(initialName);
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [language, setLanguage] = useState<'english' | 'tamil'>('english');
+  const [nameError, setNameError] = useState('');
+  const [whatsappError, setWhatsappError] = useState('');
+  const [languageError, setLanguageError] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
@@ -43,10 +48,47 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
     return () => clearInterval(timer);
   }, [step, timeLeft]);
 
-  const handleStart = () => {
-    if (studentName.trim()) {
-      setStep('quiz');
+  const isValidWhatsApp = (value: string) => {
+    const normalized = value.trim();
+    if (!normalized) return false;
+    // Accept 10+ digits; + optional at start. ~E.g. +919876543210 or 9876543210
+    return /^\+?\d{10,15}$/.test(normalized);
+  };
+
+  const handleContinue = () => {
+    let hasErrors = false;
+    setNameError('');
+    setWhatsappError('');
+
+    if (!studentName.trim()) {
+      setNameError('Please enter your full name');
+      hasErrors = true;
     }
+
+    if (!whatsappNumber.trim()) {
+      setWhatsappError('Please fill the number');
+      hasErrors = true;
+    } else if (!isValidWhatsApp(whatsappNumber)) {
+      setWhatsappError('Enter a valid WhatsApp number (10-15 digits, optional +)');
+      hasErrors = true;
+    }
+
+    if (!hasErrors) {
+      setStep('language');
+    }
+  };
+
+  const handleStartQuiz = () => {
+    if (!language) {
+      setLanguageError('Please select a language');
+      return;
+    }
+
+    setLanguageError('');
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    setTimeLeft(15 * 60);
+    setStep('quiz');
   };
 
   const handleAnswer = (optionIndex: number) => {
@@ -83,6 +125,7 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
 
     const attempt: QuizAttempt = {
       studentName,
+      whatsappNumber,
       scores,
       totalScore,
       timestamp: Date.now(),
@@ -93,6 +136,18 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
     setFinalAttempt(attempt);
     onComplete(attempt);
     setStep('result');
+  };
+
+  const handleReset = () => {
+    setStep('welcome');
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    setTimeLeft(15 * 60);
+    setFinalAttempt(null);
+    setLanguage('english');
+    setNameError('');
+    setWhatsappError('');
+    setLanguageError('');
   };
 
   const breakdownRef = useRef<HTMLDivElement>(null);
@@ -122,6 +177,9 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
   };
 
   const currentQuestion = QUESTIONS[currentQuestionIndex];
+  const translation = QUESTION_TRANSLATIONS[currentQuestion.id];
+  const displayQuestionText = language === 'tamil' ? translation?.text ?? currentQuestion.text : currentQuestion.text;
+  const displayOptions = language === 'tamil' ? translation?.options ?? currentQuestion.options : currentQuestion.options;
   const progress = ((currentQuestionIndex + 1) / QUESTIONS.length) * 100;
 
   if (step === 'welcome') {
@@ -187,19 +245,95 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
                 type="text"
                 placeholder="Enter your full name"
                 value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
+                onChange={(e) => {
+                  setStudentName(e.target.value);
+                  if (nameError) setNameError(''); // Clear error on change
+                }}
                 className="w-full pl-12 pr-4 py-3 bg-white border-2 border-[#1a6645]/10 rounded-[18px] focus:ring-4 focus:ring-[#1a6645]/10 focus:border-[#1a6645] transition-all outline-none text-base text-[#1a6645] font-bold placeholder:text-[#1a6645]/20"
               />
             </div>
+            {nameError && (
+              <p className="text-xs text-red-600 font-bold ml-12">{nameError}</p>
+            )}
+            <div className="relative">
+              <input
+                type="tel"
+                placeholder="WhatsApp number (e.g., +919876543210)"
+                value={whatsappNumber}
+                onChange={(e) => {
+                  setWhatsappNumber(e.target.value);
+                  if (whatsappError) setWhatsappError(''); // Clear error on change
+                }}
+                className="w-full pl-4 pr-4 py-3 bg-white border-2 border-[#1a6645]/10 rounded-[18px] focus:ring-4 focus:ring-[#1a6645]/10 focus:border-[#1a6645] transition-all outline-none text-base text-[#1a6645] font-bold placeholder:text-[#1a6645]/20"
+              />
+            </div>
+            {whatsappError && (
+              <p className="text-xs text-red-600 font-bold">{whatsappError}</p>
+            )}
             <button
-              onClick={handleStart}
-              disabled={!studentName.trim()}
+              onClick={handleContinue}
               className="btn-primary w-full text-lg py-3"
             >
-              Start Quiz
+              Continue to Language
               <ChevronRight size={22} />
             </button>
 
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (step === 'language') {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-xl mx-auto p-6 sm:p-10 featured-card shadow-2xl relative"
+      >
+        <h2 className="text-2xl font-black text-[#1a6645] mb-4">Choose Language</h2>
+        <div className="space-y-4">
+          <label className="flex items-center gap-3">
+            <input
+              type="radio"
+              name="language"
+              value="english"
+              checked={language === 'english'}
+              onChange={() => {
+                setLanguage('english');
+                setLanguageError('');
+              }}
+            />
+            English
+          </label>
+          <label className="flex items-center gap-3">
+            <input
+              type="radio"
+              name="language"
+              value="tamil"
+              checked={language === 'tamil'}
+              onChange={() => {
+                setLanguage('tamil');
+                setLanguageError('');
+              }}
+            />
+            தமிழ்
+          </label>
+          {languageError && <p className="text-xs text-red-600 font-bold">{languageError}</p>}
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => setStep('welcome')}
+              className="btn-secondary flex-1 py-3"
+            >
+              Back
+            </button>
+            <button
+              onClick={handleStartQuiz}
+              className="btn-primary flex-1 py-3"
+            >
+              Start Quiz
+            </button>
           </div>
         </div>
       </motion.div>
@@ -245,12 +379,12 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
                 {currentQuestion.subject}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-[#1a6645] leading-tight">
-                {currentQuestion.text}
+                {displayQuestionText}
               </h2>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-1">
-              {currentQuestion.options.map((option, idx) => (
+              {displayOptions.map((option, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleAnswer(idx)}
@@ -286,6 +420,12 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
           <h1 className="text-3xl sm:text-5xl font-black text-[#1a6645] tracking-tighter leading-none">Quiz Complete!</h1>
           <p className="text-base sm:text-xl text-[#1a6645]/60 font-medium">You've successfully identified your professional path.</p>
         </div>
+        <button
+          onClick={handleReset}
+          className="btn-secondary mx-auto mt-2 py-2 px-4"
+        >
+          Reset and Start Over
+        </button>
       </div>
       
       <div className="grid lg:grid-cols-2 gap-6 sm:gap-12 items-start">

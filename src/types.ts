@@ -11,6 +11,7 @@ export interface Question {
 export interface QuizAttempt {
   id?: string;
   studentName: string;
+  whatsappNumber: string;
   scores: Record<Subject, number>; // Number of correct answers per subject (out of 5)
   totalScore: number;
   timestamp: number;
