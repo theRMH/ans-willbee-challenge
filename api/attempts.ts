@@ -15,8 +15,10 @@ async function getConnection() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Temporary debug - remove after fix
   if (req.query.debug === "1") {
+    if (req.method === "POST") {
+      return res.json({ received_body: req.body });
+    }
     return res.json({
       DB_HOST: process.env.DB_HOST || "MISSING",
       DB_USER: process.env.DB_USER || "MISSING",
