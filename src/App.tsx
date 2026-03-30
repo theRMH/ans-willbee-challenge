@@ -24,7 +24,7 @@ export default function App() {
       toast.success('Quiz attempt saved successfully!');
     } catch (error) {
       console.error('Failed to save attempt:', error);
-      toast.error('Failed to save your result. Please try again.');
+      toast.error(`DB Error: ${(error as Error).message}`);
     }
   };
 

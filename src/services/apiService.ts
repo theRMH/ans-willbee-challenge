@@ -6,7 +6,10 @@ export const saveQuizAttempt = async (attempt: QuizAttempt): Promise<string> => 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(attempt),
   });
-  if (!res.ok) throw new Error('Failed to save attempt');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || err.error || `HTTP ${res.status}`);
+  }
   const { id } = await res.json();
   return id;
 };
