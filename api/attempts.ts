@@ -46,8 +46,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       )
     `);
 
+    // Migrate: add whatsappNumber column if it doesn't exist (MySQL-compatible)
+    const [cols] = await conn.execute(
+      `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'quiz_attempts' AND COLUMN_NAME = 'whatsappNumber'`
+    );
+    if ((cols as any[]).length === 0) {
+      await conn.execute(`ALTER TABLE quiz_attempts ADD COLUMN whatsappNumber VARCHAR(50) NOT NULL DEFAULT ''`);
+    }
+
     if (req.method === "POST") {
       const a = req.body;
+      console.log('POST /api/attempts payload', {
+        studentName: a.studentName,
+        whatsappNumber: a.whatsappNumber,
+        phoneNumber: a.phoneNumber,
+      });
       const id = `db_${Date.now()}_${Math.random().toString(36).slice(2)}`;
       await conn.execute(
         `INSERT INTO quiz_attempts (id, studentName, whatsappNumber, phoneNumber, totalScore, zone, recommendation, timestamp,
