@@ -25,10 +25,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ attempts }) => {
   }, [searchTerm, attempts]);
 
   const exportToCSV = () => {
-    const headers = ['Name', 'WhatsApp', 'Total Score', 'Zone', 'Commerce', 'Economics', 'English', 'Maths', 'Accountancy', 'Costing', 'Date'];
+const headers = ['Name', 'WhatsApp', 'Phone', 'Total Score', 'Zone', 'Commerce', 'Economics', 'English', 'Maths', 'Accountancy', 'Costing', 'Date'];
     const rows = attempts.map(a => [
       a.studentName,
       (a as any).whatsappNumber || '',
+      (a as any).phoneNumber || (a as any).whatsappNumber || '',
       a.totalScore,
       a.zone,
       a.scores.Commerce,
@@ -180,6 +181,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ attempts }) => {
                 <tr className="border-b-2 border-[#1a6645]/10">
                   <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">Student</th>
                   <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">WhatsApp</th>
+                  <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">Phone</th>
                   <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">Score</th>
                   <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">Zone</th>
                   <th className="pb-4 sm:pb-8 font-black text-[#a07820] text-[9px] sm:text-[11px] uppercase tracking-[0.3em]">Date</th>
@@ -190,6 +192,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ attempts }) => {
                   <tr key={idx} className="hover:bg-[#1a6645]/5 transition-colors group">
                     <td className="py-4 sm:py-8 font-black text-[#1a6645] group-hover:text-[#1a6645]/70 transition-colors text-sm sm:text-lg">{a.studentName}</td>
                     <td className="py-4 sm:py-8 text-sm text-[#1a6645] font-bold">{(a as any).whatsappNumber || '-'}</td>
+                    <td className="py-4 sm:py-8 text-sm text-[#1a6645] font-bold">{(a as any).phoneNumber || (a as any).whatsappNumber || '-'}</td>
                     <td className="py-4 sm:py-8">
                       <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#e8f4ee] text-[#1a6645] border-2 border-[#1a6645]/10 rounded-xl text-[10px] sm:text-xs font-black">
                         {a.totalScore}/30

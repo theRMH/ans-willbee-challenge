@@ -126,6 +126,7 @@ export const Quiz: React.FC<QuizProps> = ({ onComplete, initialName = '', isAdmi
     const attempt: QuizAttempt = {
       studentName,
       whatsappNumber,
+      phoneNumber: whatsappNumber,
       scores,
       totalScore,
       timestamp: Date.now(),
