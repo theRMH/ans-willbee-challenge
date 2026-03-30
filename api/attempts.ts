@@ -46,13 +46,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       )
     `);
 
-    // Migrate: add whatsappNumber column if it doesn't exist (MySQL-compatible)
-    const [cols] = await conn.execute(
+    // Migrate: add missing columns if they don't exist (MySQL-compatible)
+    const [existingCols] = await conn.execute(
       `SELECT COLUMN_NAME FROM information_schema.COLUMNS
-       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'quiz_attempts' AND COLUMN_NAME = 'whatsappNumber'`
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'quiz_attempts'`
     );
-    if ((cols as any[]).length === 0) {
+    const colNames = (existingCols as any[]).map((c: any) => c.COLUMN_NAME);
+    if (!colNames.includes('whatsappNumber')) {
       await conn.execute(`ALTER TABLE quiz_attempts ADD COLUMN whatsappNumber VARCHAR(50) NOT NULL DEFAULT ''`);
+    }
+    if (!colNames.includes('phoneNumber')) {
+      await conn.execute(`ALTER TABLE quiz_attempts ADD COLUMN phoneNumber VARCHAR(50) NULL`);
     }
 
     if (req.method === "POST") {
