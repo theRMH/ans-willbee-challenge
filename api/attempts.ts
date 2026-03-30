@@ -33,8 +33,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       CREATE TABLE IF NOT EXISTS quiz_attempts (
         id VARCHAR(60) PRIMARY KEY,
         studentName VARCHAR(255) NOT NULL,
-        whatsappNumber VARCHAR(50) NOT NULL,
-        phoneNumber VARCHAR(50) NULL,
+        whatsappNumber VARCHAR(50) DEFAULT '',
+        phoneNumber VARCHAR(50) DEFAULT '',
         totalScore INT NOT NULL,
         zone VARCHAR(255) NOT NULL,
         recommendation TEXT,
@@ -48,33 +48,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       )
     `);
 
-    // Migrate: add missing columns if they don't exist (MySQL-compatible)
-    const [existingCols] = await conn.execute(
-      `SELECT COLUMN_NAME FROM information_schema.COLUMNS
-       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'quiz_attempts'`
-    );
-    const colNames = (existingCols as any[]).map((c: any) => c.COLUMN_NAME);
-    if (!colNames.includes('whatsappNumber')) {
-      await conn.execute(`ALTER TABLE quiz_attempts ADD COLUMN whatsappNumber VARCHAR(50) NOT NULL DEFAULT ''`);
-    }
-    if (!colNames.includes('phoneNumber')) {
-      await conn.execute(`ALTER TABLE quiz_attempts ADD COLUMN phoneNumber VARCHAR(50) NULL`);
-    }
-
     if (req.method === "POST") {
       const a = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-      console.log('POST /api/attempts payload', {
-        studentName: a.studentName,
-        whatsappNumber: a.whatsappNumber,
-        phoneNumber: a.phoneNumber,
-      });
       const id = `db_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const whatsapp = a.whatsappNumber || a.phoneNumber || "";
       await conn.execute(
         `INSERT INTO quiz_attempts (id, studentName, whatsappNumber, phoneNumber, totalScore, zone, recommendation, timestamp,
           score_Commerce, score_Economics, score_English, score_Maths, score_Accountancy, score_Costing)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          id, a.studentName, a.whatsappNumber || "", a.phoneNumber || a.whatsappNumber || "", a.totalScore, a.zone, a.recommendation || "",
+          id, a.studentName, whatsapp, whatsapp,
+          a.totalScore, a.zone, a.recommendation || "",
           a.timestamp,
           a.scores?.Commerce || 0, a.scores?.Economics || 0, a.scores?.English || 0,
           a.scores?.Maths || 0, a.scores?.Accountancy || 0, a.scores?.Costing || 0,
@@ -90,8 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const attempts = (rows as any[]).map((r: any) => ({
         id: r.id,
         studentName: r.studentName,
-        whatsappNumber: r.whatsappNumber || '',
-        phoneNumber: r.phoneNumber || r.whatsappNumber || '',
+        whatsappNumber: r.whatsappNumber || "",
+        phoneNumber: r.phoneNumber || r.whatsappNumber || "",
         totalScore: r.totalScore,
         zone: r.zone,
         recommendation: r.recommendation,
