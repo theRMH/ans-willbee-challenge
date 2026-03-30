@@ -16,15 +16,22 @@ async function getConnection() {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.query.debug === "1") {
-    if (req.method === "POST") {
-      return res.json({ received_body: req.body });
+    const testConn = await getConnection();
+    try {
+      const testId = `test_${Date.now()}`;
+      await testConn.execute(
+        `INSERT INTO quiz_attempts (id, studentName, whatsappNumber, phoneNumber, totalScore, zone, recommendation, timestamp,
+          score_Commerce, score_Economics, score_English, score_Maths, score_Accountancy, score_Costing)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [testId, "DEBUG_TEST", "9999999999", "9999999999", 0, "Zone Analysis: The Career Voyager", "test", Date.now(), 0, 0, 0, 0, 0, 0]
+      );
+      await testConn.execute(`DELETE FROM quiz_attempts WHERE id = ?`, [testId]);
+      return res.json({ status: "INSERT works fine", body: req.body });
+    } catch (e: any) {
+      return res.status(500).json({ insert_error: e.message, body: req.body });
+    } finally {
+      await testConn.end();
     }
-    return res.json({
-      DB_HOST: process.env.DB_HOST || "MISSING",
-      DB_USER: process.env.DB_USER || "MISSING",
-      DB_NAME: process.env.DB_NAME || "MISSING",
-      DB_PASS: process.env.DB_PASS ? "set" : "MISSING",
-    });
   }
 
   const conn = await getConnection();
