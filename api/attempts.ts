@@ -62,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (req.method === "POST") {
-      const a = req.body;
+      const a = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
       console.log('POST /api/attempts payload', {
         studentName: a.studentName,
         whatsappNumber: a.whatsappNumber,
