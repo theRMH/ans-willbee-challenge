@@ -15,27 +15,10 @@ async function getConnection() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.query.debug === "1") {
-    const testConn = await getConnection();
-    try {
-      const testId = `test_${Date.now()}`;
-      await testConn.execute(
-        `INSERT INTO quiz_attempts (id, studentName, whatsappNumber, phoneNumber, totalScore, zone, recommendation, timestamp,
-          score_Commerce, score_Economics, score_English, score_Maths, score_Accountancy, score_Costing)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [testId, "DEBUG_TEST", "9999999999", "9999999999", 0, "Zone Analysis: The Career Voyager", "test", Date.now(), 0, 0, 0, 0, 0, 0]
-      );
-      await testConn.execute(`DELETE FROM quiz_attempts WHERE id = ?`, [testId]);
-      return res.json({ status: "INSERT works fine", body: req.body });
-    } catch (e: any) {
-      return res.status(500).json({ insert_error: e.message, body: req.body });
-    } finally {
-      await testConn.end();
-    }
-  }
-
-  const conn = await getConnection();
+  let conn: any = null;
   try {
+    conn = await getConnection();
+
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS quiz_attempts (
         id VARCHAR(60) PRIMARY KEY,
@@ -54,6 +37,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         score_Costing INT DEFAULT 0
       )
     `);
+
+    if (req.query.debug === "1") {
+      return res.json({
+        db: "connected",
+        body: req.body,
+        DB_HOST: process.env.DB_HOST || "MISSING",
+      });
+    }
 
     if (req.method === "POST") {
       const a = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
@@ -101,9 +92,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     res.status(405).json({ error: "Method not allowed" });
   } catch (err: any) {
-    console.error("DB error:", err?.message);
+    console.error("Handler error:", err?.message);
     res.status(500).json({ error: "DB error", detail: err?.message });
   } finally {
-    await conn.end();
+    if (conn) await conn.end().catch(() => {});
   }
 }
